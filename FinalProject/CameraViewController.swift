@@ -102,4 +102,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         presentImagePicker()
     }
 
+    @IBAction func goToGame(_ sender: UIButton) {
+        performSegue(withIdentifier: "GameSegue", sender: nil)
+    }
 }

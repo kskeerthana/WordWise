@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E466E52F2B16C7700061B50B /* MemoryGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466E52E2B16C7700061B50B /* MemoryGameViewController.swift */; };
 		E473AFFE2B0EAEB000ED886E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E473AFFD2B0EAEAF00ED886E /* AppDelegate.swift */; };
 		E473B0002B0EAEB000ED886E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E473AFFF2B0EAEB000ED886E /* SceneDelegate.swift */; };
 		E473B0022B0EAEB000ED886E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E473B0012B0EAEB000ED886E /* ViewController.swift */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E466E52E2B16C7700061B50B /* MemoryGameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryGameViewController.swift; sourceTree = "<group>"; };
 		E473AFFA2B0EAEAF00ED886E /* FinalProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinalProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E473AFFD2B0EAEAF00ED886E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E473AFFF2B0EAEB000ED886E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -70,6 +72,7 @@
 				E473B0082B0EAEB200ED886E /* LaunchScreen.storyboard */,
 				E473B00B2B0EAEB200ED886E /* Info.plist */,
 				E473B0192B0EB2FC00ED886E /* CameraViewController.swift */,
+				E466E52E2B16C7700061B50B /* MemoryGameViewController.swift */,
 			);
 			path = FinalProject;
 			sourceTree = "<group>";
@@ -157,6 +160,7 @@
 				E473B01A2B0EB2FC00ED886E /* CameraViewController.swift in Sources */,
 				E473AFFE2B0EAEB000ED886E /* AppDelegate.swift in Sources */,
 				E473B0002B0EAEB000ED886E /* SceneDelegate.swift in Sources */,
+				E466E52F2B16C7700061B50B /* MemoryGameViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
