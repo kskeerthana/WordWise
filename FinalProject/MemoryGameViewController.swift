@@ -11,12 +11,13 @@ class MemoryGameViewController: UIViewController, UICollectionViewDelegate, UICo
     var firstSelectedIndexPath: IndexPath?
     var firstSelectedValue: Int?
     
+    @IBOutlet weak var collectionView: UICollectionView!
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
         // When the view transitions (rotates), invalidate the layout to trigger an update
         coordinator.animate(alongsideTransition: { _ in
-            self.collectionViewLayout.invalidateLayout()
+            self.collectionView.collectionViewLayout.invalidateLayout()
         }, completion: nil)
     }
 
