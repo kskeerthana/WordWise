@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+
+		E44D4A5E2B16C29000DD9195 /* PuzzleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44D4A5D2B16C29000DD9195 /* PuzzleViewController.swift */; };
+		E44D4A602B16C7CD00DD9195 /* PuzzleViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44D4A5F2B16C7CD00DD9195 /* PuzzleViewCell.swift */; };
+		E466E52F2B16C7700061B50B /* MemoryGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466E52E2B16C7700061B50B /* MemoryGameViewController.swift */; };
+
 		E473AFFE2B0EAEB000ED886E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E473AFFD2B0EAEAF00ED886E /* AppDelegate.swift */; };
 		E473B0002B0EAEB000ED886E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E473AFFF2B0EAEB000ED886E /* SceneDelegate.swift */; };
 		E473B0022B0EAEB000ED886E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E473B0012B0EAEB000ED886E /* ViewController.swift */; };
@@ -18,6 +23,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+
+		E44D4A5D2B16C29000DD9195 /* PuzzleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PuzzleViewController.swift; sourceTree = "<group>"; };
+		E44D4A5F2B16C7CD00DD9195 /* PuzzleViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PuzzleViewCell.swift; sourceTree = "<group>"; };
+		E466E52E2B16C7700061B50B /* MemoryGameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryGameViewController.swift; sourceTree = "<group>"; };
 		E473AFFA2B0EAEAF00ED886E /* FinalProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinalProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E473AFFD2B0EAEAF00ED886E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E473AFFF2B0EAEB000ED886E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -66,10 +75,13 @@
 				E473AFFF2B0EAEB000ED886E /* SceneDelegate.swift */,
 				E473B0012B0EAEB000ED886E /* ViewController.swift */,
 				E473B0032B0EAEB000ED886E /* Main.storyboard */,
+				E44D4A5F2B16C7CD00DD9195 /* PuzzleViewCell.swift */,
+				E44D4A5D2B16C29000DD9195 /* PuzzleViewController.swift */,
 				E473B0062B0EAEB200ED886E /* Assets.xcassets */,
 				E473B0082B0EAEB200ED886E /* LaunchScreen.storyboard */,
 				E473B00B2B0EAEB200ED886E /* Info.plist */,
 				E473B0192B0EB2FC00ED886E /* CameraViewController.swift */,
+				E466E52E2B16C7700061B50B /* MemoryGameViewController.swift */,
 			);
 			path = FinalProject;
 			sourceTree = "<group>";
@@ -153,10 +165,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E44D4A5E2B16C29000DD9195 /* PuzzleViewController.swift in Sources */,
 				E473B0022B0EAEB000ED886E /* ViewController.swift in Sources */,
+				E44D4A602B16C7CD00DD9195 /* PuzzleViewCell.swift in Sources */,
 				E473B01A2B0EB2FC00ED886E /* CameraViewController.swift in Sources */,
 				E473AFFE2B0EAEB000ED886E /* AppDelegate.swift in Sources */,
 				E473B0002B0EAEB000ED886E /* SceneDelegate.swift in Sources */,
+				E466E52F2B16C7700061B50B /* MemoryGameViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
