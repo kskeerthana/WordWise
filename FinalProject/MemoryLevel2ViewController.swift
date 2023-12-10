@@ -1,13 +1,14 @@
 //
-//  MemoryGameViewController.swift
+//  MemoryLevel2ViewController.swift
 //  FinalProject
 //
-//  Created by Nikethana N N on 11/28/23.
+//  Created by Nikethana N N on 12/10/23.
 //
 
 import UIKit
 
-class MemoryGameViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class MemoryLevel2ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+
     var firstSelectedIndexPath: IndexPath?
     var firstSelectedValue: Int?
         var gameTimer: Timer?
@@ -16,7 +17,8 @@ class MemoryGameViewController: UIViewController, UICollectionViewDelegate, UICo
         var numberOfMatchesFound = 0
     
     @IBOutlet weak var gameNameLbl: UILabel!
-    @IBOutlet weak var collectionView: UICollectionView!
+    
+    @IBOutlet weak var levelTwoView: UICollectionView!
     @IBOutlet weak var timerLabel: UILabel!
     @IBOutlet weak var gameSubNameLbl: UILabel!
     
@@ -25,7 +27,7 @@ class MemoryGameViewController: UIViewController, UICollectionViewDelegate, UICo
         
         // When the view transitions (rotates), invalidate the layout to trigger an update
         coordinator.animate(alongsideTransition: { _ in
-            self.collectionView.collectionViewLayout.invalidateLayout()
+            self.levelTwoView.collectionViewLayout.invalidateLayout()
         }, completion: nil)
     }
 
@@ -34,18 +36,18 @@ class MemoryGameViewController: UIViewController, UICollectionViewDelegate, UICo
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "postCell", for: indexPath) as! PostCell
-        cell.number.text = String(randomNumbers[indexPath.row])
-        cell.number.isHidden = true
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "myCell", for: indexPath) as! PostCellLevelTwo
+        cell.puzzleNumber.text = String(randomNumbers[indexPath.row])
+        cell.puzzleNumber.isHidden = true
         return cell
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let cell = collectionView.cellForItem(at: indexPath) as? PostCell else { return }
+        guard let cell = collectionView.cellForItem(at: indexPath) as? PostCellLevelTwo else { return }
         // Perform the flip animation
         UIView.transition(with: cell, duration: 0.5, options: .transitionFlipFromRight, animations: {
             // Toggle visibility of the number during the flip
-            cell.number.isHidden = !cell.number.isHidden
+            cell.puzzleNumber.isHidden = !cell.puzzleNumber.isHidden
         }, completion: { _ in
             // After the flip, check if it's the first or second tap
                     if self.firstSelectedIndexPath == nil {
@@ -63,7 +65,7 @@ class MemoryGameViewController: UIViewController, UICollectionViewDelegate, UICo
                                 cell.layer.borderColor = UIColor(hexString: "#159947").cgColor
                                 cell.layer.backgroundColor = UIColor(hexString: "#DDFFEA").cgColor
                             })
-                            if let firstCell = collectionView.cellForItem(at: firstIndexPath) as? PostCell {
+                            if let firstCell = collectionView.cellForItem(at: firstIndexPath) as? PostCellLevelTwo {
                                 UIView.transition(with: firstCell, duration: 0.5, options: .transitionFlipFromRight, animations: {
                                     firstCell.layer.borderColor = UIColor(hexString: "#159947").cgColor
                                     firstCell.layer.backgroundColor = UIColor(hexString: "#DDFFEA").cgColor
@@ -74,11 +76,11 @@ class MemoryGameViewController: UIViewController, UICollectionViewDelegate, UICo
                             // If values don't match, hide the numbers after a short delay
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 UIView.transition(with: cell, duration: 0.5, options: .transitionFlipFromRight, animations: {
-                                    cell.number.isHidden = true
+                                    cell.puzzleNumber.isHidden = true
                                 })
-                                if let firstCell = collectionView.cellForItem(at: firstIndexPath) as? PostCell {
+                                if let firstCell = collectionView.cellForItem(at: firstIndexPath) as? PostCellLevelTwo {
                                     UIView.transition(with: firstCell, duration: 0.5, options: .transitionFlipFromRight, animations: {
-                                        firstCell.number.isHidden = true
+                                        firstCell.puzzleNumber.isHidden = true
                                     })
                                 }
                             }
@@ -125,13 +127,10 @@ class MemoryGameViewController: UIViewController, UICollectionViewDelegate, UICo
             let alert = UIAlertController(title: "Game Complete", message: message, preferredStyle: .alert)
 
             // Add a "Yes" action
-            alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { [weak self] _ in
-                let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                if let nextLevelVC = storyboard.instantiateViewController(withIdentifier: "MemoryLevel2ViewController") as? MemoryLevel2ViewController {
-                    self?.present(nextLevelVC, animated: true, completion: nil)
-                }
+            alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in
+                // Handle the action for moving to the next level
+                print("Moving to next level")
             }))
-
 
             // Add a "Maybe Later" action
             alert.addAction(UIAlertAction(title: "Maybe Later", style: .cancel, handler: { _ in
@@ -150,22 +149,26 @@ class MemoryGameViewController: UIViewController, UICollectionViewDelegate, UICo
         var random1: Int
         var random2: Int
         var random3: Int
+        var random4: Int
         
         repeat {
             random1 = Int.random(in: 1...9)
             random2 = Int.random(in: 1...9)
             random3 = Int.random(in: 1...9)
-        } while random1 == random2 || random1 == random3 || random2 == random3 // Ensure all are different
+            random4 = Int.random(in: 1...9)
+        } while random1 == random2 || random1 == random3 || random1 == random4 ||
+                    random2 == random3 || random2 == random4 ||
+                    random3 == random4 // Ensure all are different
         
         // Create the 2x3 matrix by repeating the numbers twice and then shuffling
-        randomNumbers = [random1, random1, random2, random2, random3, random3].shuffled()
+        randomNumbers = [random1, random1, random2, random2, random3, random3, random4, random4].shuffled()
     }
 }
 
-class PostCell: UICollectionViewCell {
-    @IBOutlet weak var number: UILabel!
-
-        override func awakeFromNib() {
+class PostCellLevelTwo: UICollectionViewCell {
+    
+    @IBOutlet weak var puzzleNumber: UILabel!
+    override func awakeFromNib() {
             super.awakeFromNib()
             setupCell()
         }
@@ -188,10 +191,12 @@ class PostCell: UICollectionViewCell {
             self.layer.masksToBounds = false
 
             // Set the font and color of the label
-            number.font = UIFont.systemFont(ofSize: 32, weight: .bold)
-            number.textColor = UIColor.darkGray
+            puzzleNumber.font = UIFont.systemFont(ofSize: 32, weight: .bold)
+            puzzleNumber.textColor = UIColor.darkGray
 
             // Background color
             self.backgroundColor = UIColor.white
         }
+
+
 }
