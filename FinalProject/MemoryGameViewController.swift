@@ -29,6 +29,18 @@ class MemoryGameViewController: UIViewController, UICollectionViewDelegate, UICo
         }, completion: nil)
     }
 
+    // Implement the UICollectionViewDelegateFlowLayout method
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        // Calculate the size of the cells based on the current view size
+        let numberOfCellsInRow: CGFloat = self.view.frame.width > self.view.frame.height ? 3 : 2
+        let spacing: CGFloat = 10 // Adjust the spacing as needed
+        let totalSpacing: CGFloat = (numberOfCellsInRow - 1) * spacing + spacing * 2 // Left and right spacing
+        let width = (collectionView.bounds.width - totalSpacing) / numberOfCellsInRow
+        let height = width // Or however you want to calculate the height
+
+        return CGSize(width: width, height: height)
+    }
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         randomNumbers.count
     }
@@ -144,6 +156,7 @@ class MemoryGameViewController: UIViewController, UICollectionViewDelegate, UICo
                 self.present(alert, animated: true, completion: nil)
             }
         }
+
     }
     
     func generateRandomNumbers() {
@@ -176,10 +189,12 @@ class PostCell: UICollectionViewCell {
             self.clipsToBounds = true
 
             // Borders
+
             self.layer.borderWidth = 5.0
             self.layer.borderColor = UIColor(hexString: "#4F3CC9").cgColor //dark purple
             self.layer.backgroundColor = UIColor(hexString: "#C0BBDE").cgColor // light purple
             
+
 
             // Shadow
             self.layer.shadowOpacity = 0.1
@@ -189,6 +204,7 @@ class PostCell: UICollectionViewCell {
 
             // Set the font and color of the label
             number.font = UIFont.systemFont(ofSize: 32, weight: .bold)
+
             number.textColor = UIColor.darkGray
 
             // Background color
