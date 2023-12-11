@@ -21,6 +21,7 @@ class SignUpViewController: UIViewController {
     }
 
     @IBAction func signUpTapped(_ sender: UIButton) {
+        print("")
         guard let email = emailTextField.text, !email.isEmpty,
               let fullName = fullNameTextFielf.text, !fullName.isEmpty,
               let password = passwordTextField.text, !password.isEmpty,
@@ -30,13 +31,27 @@ class SignUpViewController: UIViewController {
             return
         }
         // Create a new user with Firebase
-        Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
+        Auth.auth().createUser(withEmail: email, password: password) { [weak self] authResult, error in
+            guard let self = self else { return }
+            
             if let error = error {
-                self.presentAlert(title: "Signup Failed", message: error.localizedDescription)
+                DispatchQueue.main.async {
+                    self.presentAlert(title: "Signup Failed", message: error.localizedDescription)
+                }
                 return
             }
-            // You may want to add the user's full name to their profile, or save it to your database
-            // Navigate to the main interface
+            
+            DispatchQueue.main.async {
+                let alertController = UIAlertController(title: "Success", message: "Signup successful!", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "OK", style: .default) { _ in
+                    // Navigate to the CameraViewController tab
+                    if let tabBarVC = self.view.window?.rootViewController as? UITabBarController {
+                        tabBarVC.selectedIndex = 0 // Replace 0 with the actual index of CameraViewController
+                    }
+                }
+                alertController.addAction(okAction)
+                self.present(alertController, animated: true, completion: nil)
+            }
         }
     }
     @IBAction func signInTapped(_ sender: Any) {
