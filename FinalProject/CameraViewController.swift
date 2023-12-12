@@ -45,22 +45,6 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     }
     
     private func processImage(_ image: UIImage) {
-//        guard let cgImage = image.cgImage else { return }
-//
-//        let request = VNRecognizeTextRequest { [weak self] (request, error) in
-//            guard let self = self else { return }
-//
-//            if let error = error {
-//                print("Error: \(error)")
-//                return
-//            }
-//
-//            guard let observations = request.results as? [VNRecognizedTextObservation] else { return }
-//            self.recognizedText = observations.compactMap { $0.topCandidates(1).first?.string }.joined(separator: " ")
-//        }
-//
-//        let requestHandler = VNImageRequestHandler(cgImage: cgImage)
-//        try? requestHandler.perform([request])
         guard let cgImage = image.cgImage else { return }
 
         let request = VNRecognizeTextRequest { [weak self] (request, error) in
