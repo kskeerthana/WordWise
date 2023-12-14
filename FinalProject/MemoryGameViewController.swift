@@ -8,6 +8,8 @@
 import UIKit
 
 class MemoryGameViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    var gameName: String?
+    var level: String?
     var firstSelectedIndexPath: IndexPath?
     var firstSelectedValue: Int?
         var gameTimer: Timer?
@@ -111,17 +113,35 @@ class MemoryGameViewController: UIViewController, UICollectionViewDelegate, UICo
     override func viewDidLoad() {
         super.viewDidLoad()
         generateRandomNumbers()
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         self.startGameTimer()
     }
+//    func startGameTimer() {
+//        self.gameTimer?.invalidate() // Invalidate any existing timer
+//        self.timerValue = 0 // Reset the timer value
+//        self.gameTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+//            self?.timerValue += 1
+//            self?.timerLabel.text = "\(self?.timerValue ?? 0)"
+//            // You can also format this to display minutes and seconds if you prefer
+//        }
+//    }
+    
     func startGameTimer() {
         self.gameTimer?.invalidate() // Invalidate any existing timer
         self.timerValue = 0 // Reset the timer value
         self.gameTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
-            self?.timerValue += 1
-            self?.timerLabel.text = "\(self?.timerValue ?? 0)"
-            // You can also format this to display minutes and seconds if you prefer
+            guard let strongSelf = self else { return }
+            DispatchQueue.main.async { // Make sure to update UI on the main thread
+                strongSelf.timerValue += 1
+                if let timerLabel = strongSelf.timerLabel {
+                    timerLabel.text = "\(strongSelf.timerValue)"
+                }
+            }
         }
     }
+
     func stopGameTimer() {
         self.gameTimer?.invalidate()
         // At this point, timerValue contains the total time taken
