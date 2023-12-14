@@ -52,7 +52,7 @@ class LoginViewController: UIViewController {
     }
     
     @IBAction func signUpTapped(_ sender: UIButton) {
-        
+        self.dismiss(animated: true)
     }
     
     func presentAlert(title: String, message: String) {

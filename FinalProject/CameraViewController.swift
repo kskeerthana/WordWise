@@ -11,6 +11,7 @@ import AVFoundation
 
 class CameraViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     let synthesizer = AVSpeechSynthesizer()
+    let profileButton = UIButton()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,9 +21,41 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
          }
         catch
         { print("Fail to enable session") }
+        
+        // Configure the button
+        profileButton.setTitle("PP", for: .normal) // Set the text for the button
+        profileButton.titleLabel?.font = UIFont.systemFont(ofSize: 24) // Adjust the font size as needed
+
+        profileButton.backgroundColor = .lightGray // Or any color you prefer
+        profileButton.setTitleColor(.black, for: .normal) // Set the text color
+        profileButton.addTarget(self, action: #selector(profileButtonTapped), for: .touchUpInside)
+
+        // Add the button to the view hierarchy
+        view.addSubview(profileButton)
+
+        // Disable autoresizing masks and set constraints
+        profileButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            profileButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            profileButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
+            profileButton.widthAnchor.constraint(equalToConstant: 60), // Increased width
+            profileButton.heightAnchor.constraint(equalToConstant: 60)  // Increased height
+        ])
+
+        // Make the button circular
+        profileButton.layer.cornerRadius = 30 // Half of width or height
+        profileButton.clipsToBounds = true
     }
     var image: UIImage?
     var recognizedText: String = ""
+    
+    @objc func profileButtonTapped() {
+        // Handle the button tap
+        print("Profile button tapped")
+        let profileVC = ProfileViewController()
+        profileVC.modalPresentationStyle = .fullScreen // or .overFullScreen if you want a transparent background
+        self.present(profileVC, animated: true, completion: nil)
+        }
     
     func presentImagePicker() {
         guard UIImagePickerController.isSourceTypeAvailable(.camera) else {

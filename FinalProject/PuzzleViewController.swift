@@ -6,11 +6,14 @@
 //
 
 import UIKit
+import FirebaseAuth
+import FirebaseFirestore
 
 class PuzzleViewController: UICollectionViewController,UICollectionViewDelegateFlowLayout {
 
     var currentLevel = 1
     var numbers = [String]()
+    let descriptionLabel = UILabel()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,17 +30,36 @@ class PuzzleViewController: UICollectionViewController,UICollectionViewDelegateF
 //        configureCollectionViewLayout()
         
         collectionView.register(CustomHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "HeaderView")
+        setupDescriptionLabel()
     }
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         configureCollectionViewLayout() // Ensure layout is updated here
     }
+    
+    func setupDescriptionLabel() {
+            // Configure the label's appearance
+            descriptionLabel.text = "Drag and drop the tiles in sequence"
+            descriptionLabel.textAlignment = .center
+            descriptionLabel.font = UIFont.italicSystemFont(ofSize: 16).bold()
+            descriptionLabel.numberOfLines = 0 // Allows multiple lines if needed
+
+            // Add the label to the view and set its constraints
+            descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(descriptionLabel)
+            NSLayoutConstraint.activate([
+                descriptionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+                descriptionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+                descriptionLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20)
+            ])
+        }
 
     func setupLevel(_ level: Int) {
         numbers = (1...level + 3).shuffled().map { "\($0)" }
         configureCollectionViewLayout()
         collectionView.reloadData()
+        updateGameState()
     }
 
     func setupDragAndDrop() {
@@ -65,8 +87,8 @@ class PuzzleViewController: UICollectionViewController,UICollectionViewDelegateF
         if isCorrectOrder {
             // Move to the next level
             advanceToNextLevel()
-            currentLevel += 1
-            setupLevel(currentLevel)
+//            currentLevel += 1
+//            setupLevel(currentLevel)
         }
     }
 
@@ -92,6 +114,9 @@ class PuzzleViewController: UICollectionViewController,UICollectionViewDelegateF
     func advanceToNextLevel() {
         let alert = UIAlertController(title: "Great Job!", message: "Moving to level \(currentLevel + 1)", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
+            self.currentLevel += 1
+            self.setupLevel(self.currentLevel)
+            self.updateGameState()
         }))
         present(alert, animated: true)
     }
@@ -111,7 +136,7 @@ class PuzzleViewController: UICollectionViewController,UICollectionViewDelegateF
     
     func configureCollectionViewLayout() {
         guard let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
-
+            
             let numberOfCellsPerRow: CGFloat = 3 // Adjust based on your design
             let spacing: CGFloat = 1 // Spacing between cells
             let totalSpacing = (numberOfCellsPerRow - 1) * spacing
@@ -122,6 +147,30 @@ class PuzzleViewController: UICollectionViewController,UICollectionViewDelegateF
             layout.minimumLineSpacing = spacing
             layout.minimumInteritemSpacing = spacing
     }
+    
+    func updateGameState() {
+        guard let userId = Auth.auth().currentUser?.uid else {
+            print("User not logged in")
+            return
+        }
+
+        let gameData: [String: Any] = [
+            "userId": userId,
+            "gameName": "PuzzleGame", // Replace with your actual game name
+            "currentLevel": currentLevel,
+            "totalLevels": 5 // Assuming the total levels are hard-coded as 5
+        ]
+
+        let db = Firestore.firestore()
+        db.collection("games").document(userId).setData(gameData, merge: true) { error in
+            if let error = error {
+                print("Error updating game state: \(error)")
+            } else {
+                print("Game state updated successfully.")
+            }
+        }
+    }
+
 
 
 
@@ -146,3 +195,9 @@ class CustomHeaderView: UICollectionReusableView {
     }
 }
 
+extension UIFont {
+    func bold() -> UIFont {
+        let descriptor = fontDescriptor.withSymbolicTraits([.traitBold, .traitItalic])
+        return UIFont(descriptor: descriptor!, size: 0) // size 0 means keep the size as it is
+    }
+}
