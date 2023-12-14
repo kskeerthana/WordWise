@@ -9,10 +9,6 @@ import UIKit
 
 class PuzzleViewCell: UICollectionViewCell {
     
-    @IBOutlet weak var cellLabel: UILabel!
-    
-    func configure(with numString: String){
-        print("input from view controller",numString)
-        cellLabel.text = numString
-    }
+    @IBOutlet weak var cellLabell: UILabel!
+
 }

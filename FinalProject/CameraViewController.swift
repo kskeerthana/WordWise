@@ -85,7 +85,13 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     @IBAction func imgBtnClicked(_ sender: UIButton) {
         presentImagePicker()
     }
-
+    @IBAction func goToMemoryGame(_ sender: UIButton) {
+        let delBtn = MemoryGameViewController()
+        delBtn.modalPresentationStyle = .fullScreen
+        delBtn.modalTransitionStyle = .coverVertical
+        self.present(delBtn, animated: true, completion: nil)
+    }
+    
     @IBAction func goToGame(_ sender: UIButton) {
         performSegue(withIdentifier: "GameSegue", sender: nil)
     }

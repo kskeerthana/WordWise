@@ -8,6 +8,8 @@
 import UIKit
 
 class MemoryGameViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    var gameName: String?
+    var level: String?
     var firstSelectedIndexPath: IndexPath?
     var firstSelectedValue: Int?
         var gameTimer: Timer?
@@ -27,6 +29,18 @@ class MemoryGameViewController: UIViewController, UICollectionViewDelegate, UICo
         coordinator.animate(alongsideTransition: { _ in
             self.collectionView.collectionViewLayout.invalidateLayout()
         }, completion: nil)
+    }
+
+    // Implement the UICollectionViewDelegateFlowLayout method
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        // Calculate the size of the cells based on the current view size
+        let numberOfCellsInRow: CGFloat = self.view.frame.width > self.view.frame.height ? 3 : 2
+        let spacing: CGFloat = 10 // Adjust the spacing as needed
+        let totalSpacing: CGFloat = (numberOfCellsInRow - 1) * spacing + spacing * 2 // Left and right spacing
+        let width = (collectionView.bounds.width - totalSpacing) / numberOfCellsInRow
+        let height = width // Or however you want to calculate the height
+
+        return CGSize(width: width, height: height)
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -99,17 +113,35 @@ class MemoryGameViewController: UIViewController, UICollectionViewDelegate, UICo
     override func viewDidLoad() {
         super.viewDidLoad()
         generateRandomNumbers()
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         self.startGameTimer()
     }
+//    func startGameTimer() {
+//        self.gameTimer?.invalidate() // Invalidate any existing timer
+//        self.timerValue = 0 // Reset the timer value
+//        self.gameTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+//            self?.timerValue += 1
+//            self?.timerLabel.text = "\(self?.timerValue ?? 0)"
+//            // You can also format this to display minutes and seconds if you prefer
+//        }
+//    }
+    
     func startGameTimer() {
         self.gameTimer?.invalidate() // Invalidate any existing timer
         self.timerValue = 0 // Reset the timer value
         self.gameTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
-            self?.timerValue += 1
-            self?.timerLabel.text = "\(self?.timerValue ?? 0)"
-            // You can also format this to display minutes and seconds if you prefer
+            guard let strongSelf = self else { return }
+            DispatchQueue.main.async { // Make sure to update UI on the main thread
+                strongSelf.timerValue += 1
+                if let timerLabel = strongSelf.timerLabel {
+                    timerLabel.text = "\(strongSelf.timerValue)"
+                }
+            }
         }
     }
+
     func stopGameTimer() {
         self.gameTimer?.invalidate()
         // At this point, timerValue contains the total time taken
@@ -144,6 +176,7 @@ class MemoryGameViewController: UIViewController, UICollectionViewDelegate, UICo
                 self.present(alert, animated: true, completion: nil)
             }
         }
+
     }
     
     func generateRandomNumbers() {
@@ -176,10 +209,12 @@ class PostCell: UICollectionViewCell {
             self.clipsToBounds = true
 
             // Borders
+
             self.layer.borderWidth = 5.0
             self.layer.borderColor = UIColor(hexString: "#4F3CC9").cgColor //dark purple
             self.layer.backgroundColor = UIColor(hexString: "#C0BBDE").cgColor // light purple
             
+
 
             // Shadow
             self.layer.shadowOpacity = 0.1
@@ -189,6 +224,7 @@ class PostCell: UICollectionViewCell {
 
             // Set the font and color of the label
             number.font = UIFont.systemFont(ofSize: 32, weight: .bold)
+
             number.textColor = UIColor.darkGray
 
             // Background color
