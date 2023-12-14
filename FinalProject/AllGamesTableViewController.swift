@@ -8,82 +8,89 @@
 import UIKit
 
 class AllGamesTableViewController: UITableViewController {
+    // Hardcoded game data
+    
+    var games: [Game] = [
+            Game(name: "Memory Game", currentLevel: 1, totalLevels: 10),
+            Game(name: "Puzzle Game", currentLevel: 2, totalLevels: 10)
+        ]
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
-    }
-
-    // MARK: - Table view data source
-
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
+        override func viewDidLoad() {
+            super.viewDidLoad()
+            tableView.dataSource = self
+            tableView.reloadData()
+        }
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // Deselect the row with animation
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        // Assuming you have an array of games with their names
+        let gameName = games[indexPath.row].name
+        if gameName == "Memory Game" {
+            performSegue(withIdentifier: "memoryGame", sender: indexPath)
+        } else if gameName == "Puzzle Game" {
+            performSegue(withIdentifier: "puzzleGame", sender: indexPath)
+        }
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
-    }
+            return games.count
+        }
 
-    /*
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
+            let cell = tableView.dequeueReusableCell(withIdentifier: "myCell", for: indexPath) as! GameTableViewCell
 
-        // Configure the cell...
+            let game = games[indexPath.row]
+            cell.gameNameLabel.text = game.name
+            cell.levelLabel.text = "Level: \(game.currentLevel)"
+            // Calculate the progress based on the current level and the total levels
+            cell.progressView.progress = Float(game.currentLevel) / Float(game.totalLevels)
 
-        return cell
+            return cell
+        }
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 10 // This will create a 10pt space between sections
     }
-    */
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerView = UIView()
+        headerView.backgroundColor = UIColor.clear
+        return headerView
     }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+        if let indexPath = sender as? IndexPath {
+            let selectedGame = games[indexPath.row]
+            switch segue.identifier {
+                case "memoryGame":
+                    if let memoryVC = segue.destination as? MemoryGameViewController {
+                        // Configure memoryVC with selectedGame data
+                        memoryVC.gameName = selectedGame.name
+//                        memoryVC.level = selectedGame.level
+                    }
+                case "puzzleGame":
+                    if let puzzleVC = segue.destination as? PuzzleViewController {
+                        // Configure puzzleVC with selectedGame data
+                        puzzleVC.gameName = selectedGame.name
+//                        puzzleVC.level = selectedGame.level
+                    }
+                default:
+                    break
+            }
+        }
     }
-    */
 
+
+
+    }
+// Game struct with an added property for total levels
+struct Game {
+    let name: String
+    let currentLevel: Int
+    let totalLevels: Int
+}
+
+// Custom UITableViewCell subclass with outlets for labels and progress view
+class GameTableViewCell: UITableViewCell {
+    @IBOutlet weak var gameNameLabel: UILabel!
+    @IBOutlet weak var levelLabel: UILabel!
+    @IBOutlet weak var progressView: UIProgressView!
 }

@@ -9,6 +9,7 @@ import UIKit
 
 class PuzzleViewController: UICollectionViewController,UICollectionViewDelegateFlowLayout {
 
+    var gameName: String?
     var currentLevel = 1
     var numbers = [String]()
 
