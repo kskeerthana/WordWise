@@ -113,6 +113,52 @@ class MemoryGameViewController: UIViewController, UICollectionViewDelegate, UICo
     override func viewDidLoad() {
         super.viewDidLoad()
         generateRandomNumbers()
+        self.startGameTimer()
+    }
+    func startGameTimer() {
+        self.gameTimer?.invalidate() // Invalidate any existing timer
+        self.timerValue = 0 // Reset the timer value
+        self.gameTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+            self?.timerValue += 1
+            self?.timerLabel.text = "\(self?.timerValue ?? 0)"
+            // You can also format this to display minutes and seconds if you prefer
+        }
+    }
+    func stopGameTimer() {
+        self.gameTimer?.invalidate()
+        // At this point, timerValue contains the total time taken
+        // You can store it or use it as needed
+    }
+
+    func checkForCompletion() {
+        // Check if all tiles are matched
+        if numberOfMatchesFound == randomNumbers.count / 2 {
+            print("Game Completed")
+            stopGameTimer() // Stop the timer
+            let message = "Woohoo! You've completed the game in \(self.timerValue) seconds. Do you want to go to the next level?"
+            let alert = UIAlertController(title: "Game Complete", message: message, preferredStyle: .alert)
+
+            // Add a "Yes" action
+            alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { [weak self] _ in
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                if let nextLevelVC = storyboard.instantiateViewController(withIdentifier: "MemoryLevel2ViewController") as? MemoryLevel2ViewController {
+                    self?.present(nextLevelVC, animated: true, completion: nil)
+                }
+            }))
+
+
+            // Add a "Maybe Later" action
+            alert.addAction(UIAlertAction(title: "Maybe Later", style: .cancel, handler: { _ in
+                // Handle the action for postponing to the next level
+                self.dismiss(animated: true, completion: nil)
+            }))
+
+            // Present the alert
+            DispatchQueue.main.async {
+                self.present(alert, animated: true, completion: nil)
+            }
+        }
+
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)

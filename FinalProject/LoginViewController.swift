@@ -26,12 +26,28 @@ class LoginViewController: UIViewController {
         }
         // Sign in with Firebase
         Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
-            guard let strongSelf = self else { return }
+            guard let self = self else { return }
+
             if let error = error {
-                self?.presentAlert(title: "Login Failed", message: error.localizedDescription)
+                DispatchQueue.main.async {
+                    self.presentAlert(title: "Sign In Failed", message: error.localizedDescription)
+                }
                 return
             }
-            // Navigate to the main interface
+
+            DispatchQueue.main.async {
+                // Success Alert
+                let alertController = UIAlertController(title: "Success", message: "Sign In successful!", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "OK", style: .default) { _ in
+                    // Navigate to the CameraViewController tab
+                    self.dismiss(animated: true)
+                    if let tabBarVC = self.view.window?.rootViewController as? UITabBarController {
+                        tabBarVC.selectedIndex = 0 // Replace 0 with the actual index of CameraViewController
+                    }
+                }
+                alertController.addAction(okAction)
+                self.present(alertController, animated: true, completion: nil)
+            }
         }
     }
     
