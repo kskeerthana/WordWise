@@ -7,6 +7,7 @@
 
 import UIKit
 import FirebaseAuth
+import FirebaseFirestore
 
 class LoginViewController: UIViewController {
 
@@ -14,8 +15,29 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var passwordTxtField: UITextField!
     override func viewDidLoad() {
         super.viewDidLoad()
+        configurePasswordToggle()
+    }
+    
+    func configurePasswordToggle() {
+        let toggleButton = UIButton(type: .custom)
+        toggleButton.setImage(UIImage(systemName: "eye"), for: .normal) // Use an eye icon image
+        toggleButton.setImage(UIImage(systemName: "eye.slash"), for: .selected) // Use an eye slash icon image for selected state
+        toggleButton.addTarget(self, action: #selector(togglePasswordVisibility), for: .touchUpInside)
 
-        // Do any additional setup after loading the view.
+        passwordTxtField.rightView = toggleButton
+        passwordTxtField.rightViewMode = .always
+        passwordTxtField.isSecureTextEntry = true
+    }
+    
+    @objc func togglePasswordVisibility(sender: UIButton) {
+        sender.isSelected = !sender.isSelected // Toggle the selected state
+        passwordTxtField.isSecureTextEntry.toggle()
+        passwordTxtField.isSecureTextEntry.toggle()
+    }
+    
+    func clearTextFields() {
+        emailTxtField.text = ""
+        passwordTxtField.text = ""
     }
     
     @IBAction func signInTapped(_ sender: UIButton) {
@@ -26,33 +48,87 @@ class LoginViewController: UIViewController {
         }
         // Sign in with Firebase
         Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
-            guard let self = self else { return }
+                guard let self = self else { return }
 
-            if let error = error {
-                DispatchQueue.main.async {
-                    self.presentAlert(title: "Sign In Failed", message: error.localizedDescription)
+                if let error = error {
+                    DispatchQueue.main.async {
+                        self.presentAlert(title: "Sign In Failed", message: error.localizedDescription)
+                    }
+                    return
                 }
-                return
-            }
 
-            DispatchQueue.main.async {
-                // Success Alert
-                let alertController = UIAlertController(title: "Success", message: "Sign In successful!", preferredStyle: .alert)
-                let okAction = UIAlertAction(title: "OK", style: .default) { _ in
-                    // Navigate to the CameraViewController tab
-                    self.dismiss(animated: true)
-                    if let tabBarVC = self.view.window?.rootViewController as? UITabBarController {
-                        tabBarVC.selectedIndex = 0 // Replace 0 with the actual index of CameraViewController
+                // Check if the signed-in user is in the admins collection
+                guard let uid = Auth.auth().currentUser?.uid else { return }
+                let db = Firestore.firestore()
+                db.collection("admins").document(uid).getDocument { [weak self] (document, error) in
+                    guard let self = self else { return }
+
+                    if let document = document, document.exists {
+                        // User is an admin, navigate to Admin Panel
+                        self.navigateToAdminPanel()
+                    } else {
+                        // User is not an admin, proceed with normal user flow
+                        self.navigateToUserFlow()
                     }
                 }
-                alertController.addAction(okAction)
-                self.present(alertController, animated: true, completion: nil)
+            }
+//        Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
+//            guard let self = self else { return }
+//
+//            if let error = error {
+//                DispatchQueue.main.async {
+//                    self.presentAlert(title: "Sign In Failed", message: error.localizedDescription)
+//                }
+//                return
+//            }
+//            DispatchQueue.main.async {
+//                let alertController = UIAlertController(title: "Success", message: "Sign in successful!", preferredStyle: .alert)
+//                let okAction = UIAlertAction(title: "OK", style: .default) { [weak self] _ in
+//                    guard let self = self else { return }
+//                    clearTextFields()
+//                    // Assuming 'MainTabBarController' is the identifier of your UITabBarController in the storyboard
+//                    let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//                    if let mainTabBarController = storyboard.instantiateViewController(withIdentifier: "MainTabBarController") as? UITabBarController {
+//                        
+//                        // Assuming CameraViewController is at index 0, change it to the correct index if needed
+//                        mainTabBarController.selectedIndex = 0
+//                        
+//                        // Set the UITabBarController as the root view controller
+//                        if let sceneDelegate = self.view.window?.windowScene?.delegate as? SceneDelegate {
+//                            sceneDelegate.window?.rootViewController = mainTabBarController
+//                            sceneDelegate.window?.makeKeyAndVisible()
+//                        }
+//                    }
+//                }
+//                alertController.addAction(okAction)
+//                self.present(alertController, animated: true, completion: nil)
+//            }
+//        }
+    }
+    
+    func navigateToAdminPanel() {
+        let adminVC = AdminController() // Assuming AdminController is your admin panel view controller
+        self.present(adminVC, animated: true)
+    }
+
+    func navigateToUserFlow() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let mainTabBarController = storyboard.instantiateViewController(withIdentifier: "MainTabBarController") as? UITabBarController {
+            mainTabBarController.selectedIndex = 0 // Replace 0 with the index of CameraViewController
+            if let sceneDelegate = view.window?.windowScene?.delegate as? SceneDelegate {
+                sceneDelegate.window?.rootViewController = mainTabBarController
+                sceneDelegate.window?.makeKeyAndVisible()
             }
         }
     }
     
     @IBAction func signUpTapped(_ sender: UIButton) {
-        self.dismiss(animated: true)
+//        let storyboard = UIStoryboard(name: "Main", bundle: nil) // Replace "Main" with your storyboard name
+//            if let signUpVC = storyboard.instantiateViewController(withIdentifier: "SignUpViewController") as? SignUpViewController {
+//                // Present the sign-up view controller
+//                signUpVC.modalPresentationStyle = .fullScreen
+//                self.present(signUpVC, animated: true, completion: nil)
+//            }
     }
     
     func presentAlert(title: String, message: String) {

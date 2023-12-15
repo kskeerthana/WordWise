@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		E40465AA2B2AA23500A6CBE2 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E40465A92B2AA23500A6CBE2 /* SignUpViewController.swift */; };
 		E40465AE2B2ACE9000A6CBE2 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E40465AD2B2ACE9000A6CBE2 /* ProfileViewController.swift */; };
+		E40465B02B2C326D00A6CBE2 /* AdminController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E40465AF2B2C326D00A6CBE2 /* AdminController.swift */; };
 		E449B34B2B2608740079CB31 /* UIColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E449B34A2B2608730079CB31 /* UIColorExtensions.swift */; };
 		E449B34D2B2651680079CB31 /* MemoryLevel2ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E449B34C2B2651680079CB31 /* MemoryLevel2ViewController.swift */; };
 		E44D4A5E2B16C29000DD9195 /* PuzzleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44D4A5D2B16C29000DD9195 /* PuzzleViewController.swift */; };
@@ -51,15 +52,13 @@
 		E49422A72B265055000CBB11 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = E49422A62B265055000CBB11 /* FirebaseStorageCombine-Community */; };
 		E49422A92B265453000CBB11 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E49422A82B265453000CBB11 /* GoogleService-Info.plist */; };
 		E49422AB2B2655EE000CBB11 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49422AA2B2655EE000CBB11 /* LoginViewController.swift */; };
+		E4C7D85E2B293C6300AC3F12 /* AllGamesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C7D85D2B293C6300AC3F12 /* AllGamesTableViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		E40465A92B2AA23500A6CBE2 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		E40465AD2B2ACE9000A6CBE2 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
-		E4C7D85E2B293C6300AC3F12 /* AllGamesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C7D85D2B293C6300AC3F12 /* AllGamesTableViewController.swift */; };
-/* End PBXBuildFile section */
-
-/* Begin PBXFileReference section */
+		E40465AF2B2C326D00A6CBE2 /* AdminController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminController.swift; sourceTree = "<group>"; };
 		E449B3482B26005D0079CB31 /* GamesTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamesTableViewController.swift; sourceTree = "<group>"; };
 		E449B34A2B2608730079CB31 /* UIColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtensions.swift; sourceTree = "<group>"; };
 		E449B34C2B2651680079CB31 /* MemoryLevel2ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryLevel2ViewController.swift; sourceTree = "<group>"; };
@@ -78,7 +77,6 @@
 		E473B0192B0EB2FC00ED886E /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		E49422A82B265453000CBB11 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E49422AA2B2655EE000CBB11 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
-		E49422AC2B26570C000CBB11 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		E4C7D85D2B293C6300AC3F12 /* AllGamesTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllGamesTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -160,6 +158,7 @@
 				E449B34A2B2608730079CB31 /* UIColorExtensions.swift */,
 				E449B34C2B2651680079CB31 /* MemoryLevel2ViewController.swift */,
 				E4C7D85D2B293C6300AC3F12 /* AllGamesTableViewController.swift */,
+				E40465AF2B2C326D00A6CBE2 /* AdminController.swift */,
 			);
 			path = FinalProject;
 			sourceTree = "<group>";
@@ -291,6 +290,7 @@
 				E49422AB2B2655EE000CBB11 /* LoginViewController.swift in Sources */,
 				E473AFFE2B0EAEB000ED886E /* AppDelegate.swift in Sources */,
 				E473B0002B0EAEB000ED886E /* SceneDelegate.swift in Sources */,
+				E40465B02B2C326D00A6CBE2 /* AdminController.swift in Sources */,
 				E40465AA2B2AA23500A6CBE2 /* SignUpViewController.swift in Sources */,
 				E466E52F2B16C7700061B50B /* MemoryGameViewController.swift in Sources */,
 			);

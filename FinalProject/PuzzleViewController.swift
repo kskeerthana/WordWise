@@ -11,13 +11,14 @@ import FirebaseFirestore
 
 class PuzzleViewController: UICollectionViewController,UICollectionViewDelegateFlowLayout {
 
-    var currentLevel = 1
+    var currentLevel : Int?
     var numbers = [String]()
     let descriptionLabel = UILabel()
+    var gameName : String? = nil
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupLevel(currentLevel)
+//        setupLevel(currentLevel)
         setupDragAndDrop()
         
         let layout = UICollectionViewFlowLayout()
@@ -26,11 +27,14 @@ class PuzzleViewController: UICollectionViewController,UICollectionViewDelegateF
         layout.minimumLineSpacing = 1
         layout.minimumInteritemSpacing = 1
         collectionView.collectionViewLayout = layout
+        let descriptionLabelHeight: CGFloat = 40 // Adjust this value based on the size of your description label
+        collectionView.contentInset = UIEdgeInsets(top: descriptionLabelHeight, left: 0, bottom: 0, right: 0)
         
 //        configureCollectionViewLayout()
         
         collectionView.register(CustomHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "HeaderView")
         setupDescriptionLabel()
+        fetchCurrentLevel()
     }
     
     override func viewWillLayoutSubviews() {
@@ -112,10 +116,16 @@ class PuzzleViewController: UICollectionViewController,UICollectionViewDelegateF
     }
     
     func advanceToNextLevel() {
-        let alert = UIAlertController(title: "Great Job!", message: "Moving to level \(currentLevel + 1)", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Great Job!", message: "Moving to level \(currentLevel! + 1)", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
-            self.currentLevel += 1
-            self.setupLevel(self.currentLevel)
+//            self.currentLevel += 1
+//            self.setupLevel(self.currentLevel)
+//            self.updateGameState()
+            guard let level = self.currentLevel else { return }
+
+            let newLevel = level + 1
+            self.currentLevel = newLevel
+            self.setupLevel(newLevel)
             self.updateGameState()
         }))
         present(alert, animated: true)
@@ -126,7 +136,9 @@ class PuzzleViewController: UICollectionViewController,UICollectionViewDelegateF
             fatalError("Unexpected element kind")
         }
         let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "HeaderView", for: indexPath) as! CustomHeaderView
-        header.titleLabel.text = "Level \(currentLevel)"
+        let level = currentLevel ?? 0 // Provide a default value such as 0
+        header.titleLabel.text = "Level \(level)"
+//        header.titleLabel.text = "Level \(currentLevel)"
         return header
     }
     
@@ -137,42 +149,70 @@ class PuzzleViewController: UICollectionViewController,UICollectionViewDelegateF
     func configureCollectionViewLayout() {
         guard let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
             
-            let numberOfCellsPerRow: CGFloat = 3 // Adjust based on your design
-            let spacing: CGFloat = 1 // Spacing between cells
-            let totalSpacing = (numberOfCellsPerRow - 1) * spacing
-            let individualCellWidth = (collectionView.bounds.width - totalSpacing) / numberOfCellsPerRow
-            let individualCellHeight = (collectionView.bounds.height - totalSpacing) / numberOfCellsPerRow // Adjust height as needed
+        let numberOfCellsPerRow: CGFloat = 3 // Adjust based on your design
+        let spacing: CGFloat = 1 // Spacing between cells
+        let totalSpacing = (numberOfCellsPerRow - 1) * spacing
+        let individualCellWidth = (collectionView.bounds.width - totalSpacing) / numberOfCellsPerRow
+        let individualCellHeight = (collectionView.bounds.height - totalSpacing) / numberOfCellsPerRow
+        let CellHeight = individualCellWidth - 1
 
-            layout.itemSize = CGSize(width: individualCellWidth, height: individualCellHeight)
+            layout.itemSize = CGSize(width: individualCellWidth, height: CellHeight)
             layout.minimumLineSpacing = spacing
             layout.minimumInteritemSpacing = spacing
     }
     
     func updateGameState() {
-        guard let userId = Auth.auth().currentUser?.uid else {
-            print("User not logged in")
+        guard let userId = Auth.auth().currentUser?.uid, let gameName = self.gameName else {
+                print("User ID or Game Name not found")
+                return
+            }
+
+            let gameData: [String: Any] = [
+                "userId": userId,
+                "gameName": gameName,
+                "currentLevel": currentLevel,
+                "totalLevels": 10
+            ]
+
+            let db = Firestore.firestore()
+            // Assuming you have a unique document for each game and user
+            let gameDocId = "\(userId)_\(gameName)"
+            db.collection("games").document(gameDocId).setData(gameData, merge: true) { error in
+                if let error = error {
+                    print("Error updating game state: \(error)")
+                } else {
+                    print("Game state updated successfully.")
+                }
+            }
+    }
+    
+    func fetchCurrentLevel() {
+        guard let userId = Auth.auth().currentUser?.uid, let gameName = self.gameName else {
+            print("User ID or Game Name not found")
             return
         }
-
-        let gameData: [String: Any] = [
-            "userId": userId,
-            "gameName": "PuzzleGame", // Replace with your actual game name
-            "currentLevel": currentLevel,
-            "totalLevels": 5 // Assuming the total levels are hard-coded as 5
-        ]
-
+        
         let db = Firestore.firestore()
-        db.collection("games").document(userId).setData(gameData, merge: true) { error in
+        db.collection("games").whereField("userId", isEqualTo: userId).whereField("gameName", isEqualTo: gameName).getDocuments { [weak self] (snapshot, error) in
             if let error = error {
-                print("Error updating game state: \(error)")
+                print("Error fetching game state: \(error)")
+                return
+            }
+            
+            if let documents = snapshot?.documents, !documents.isEmpty {
+                let data = documents.first?.data()
+                let fetchedLevel = data?["currentLevel"] as? Int ?? 1
+                self?.currentLevel = fetchedLevel
+                self?.setupLevel(fetchedLevel)
             } else {
-                print("Game state updated successfully.")
+                print("No game state found, starting at level 1")
+                self?.currentLevel = 1
+                self?.setupLevel(1)
             }
         }
+        
+        
     }
-
-
-
 
 }
 

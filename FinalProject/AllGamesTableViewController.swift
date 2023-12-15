@@ -6,20 +6,29 @@
 //
 
 import UIKit
+import FirebaseAuth
+import FirebaseFirestore
 
 class AllGamesTableViewController: UITableViewController {
     // Hardcoded game data
     
-    var games: [Game] = [
-            Game(name: "Memory Game", currentLevel: 1, totalLevels: 10),
-            Game(name: "Puzzle Game", currentLevel: 2, totalLevels: 10)
-        ]
+    var games: [Game] = []
+//            Game(name: "Memory Game", currentLevel: 1, totalLevels: 10),
+//            Game(name: "Puzzle Game", currentLevel: 2, totalLevels: 10)
+//        ]
 
-        override func viewDidLoad() {
-            super.viewDidLoad()
-            tableView.dataSource = self
-            tableView.reloadData()
-        }
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        tableView.dataSource = self
+        tableView.reloadData()
+        fetchGamesForCurrentUser()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchGamesForCurrentUser()
+    }
+
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // Deselect the row with animation
         tableView.deselectRow(at: indexPath, animated: true)
@@ -77,12 +86,80 @@ class AllGamesTableViewController: UITableViewController {
             }
         }
     }
+    
+    func fetchGamesForCurrentUser() {
+        guard let userId = Auth.auth().currentUser?.uid else { return }
+
+        let db = Firestore.firestore()
+        let gamesRef = db.collection("games")
+
+        gamesRef.whereField("userId", isEqualTo: userId).getDocuments { [weak self] (snapshot, error) in
+            guard let self = self else { return }
+
+            if let error = error {
+                print("Error getting documents: \(error)")
+                return
+            }
+            
+            if let documents = snapshot?.documents, !documents.isEmpty {
+                self.games = documents.compactMap { doc -> Game? in
+                    let data = doc.data()
+                    guard let name = data["gameName"] as? String,
+                          let currentLevel = data["currentLevel"] as? Int,
+                          let totalLevels = data["totalLevels"] as? Int else {
+                        return nil
+                    }
+                    return Game(id: doc.documentID, name: name, currentLevel: currentLevel, totalLevels: totalLevels)
+                }
+            } else {
+                // No documents found, create new ones
+                self.createInitialGamesForUser(userId: userId)
+            }
+
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
+    }
+    
+    func createInitialGamesForUser(userId: String) {
+        let db = Firestore.firestore()
+        let gamesRef = db.collection("games")
+
+        // Example games to add
+        let initialGames = [
+            Game(id : "1",name: "Memory Game", currentLevel: 1, totalLevels: 10),
+            Game(id : "2",name: "Puzzle Game", currentLevel: 1, totalLevels: 10)
+        ]
+
+        for game in initialGames {
+            var gameData: [String: Any] = [
+                "userId": userId,
+                "gameName": game.name,
+                "currentLevel": game.currentLevel,
+                "totalLevels": game.totalLevels
+            ]
+
+            let gameDocId = "\(userId)_\(game.name)"
+            gamesRef.document(gameDocId).setData(gameData) { error in
+                if let error = error {
+                    print("Error adding document: \(error)")
+                }
+            }
+        }
+
+        // Set the initial games as the current games
+        self.games = initialGames
+    }
+
+
 
 
 
     }
 // Game struct with an added property for total levels
 struct Game {
+    let id: String
     let name: String
     let currentLevel: Int
     let totalLevels: Int

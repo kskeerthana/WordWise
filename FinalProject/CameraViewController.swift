@@ -8,6 +8,8 @@
 import UIKit
 import Vision
 import AVFoundation
+import FirebaseAuth
+import FirebaseFirestore
 
 class CameraViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     let synthesizer = AVSpeechSynthesizer()
@@ -52,9 +54,35 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     @objc func profileButtonTapped() {
         // Handle the button tap
         print("Profile button tapped")
-        let profileVC = ProfileViewController()
-        profileVC.modalPresentationStyle = .fullScreen // or .overFullScreen if you want a transparent background
-        self.present(profileVC, animated: true, completion: nil)
+            guard let userId = Auth.auth().currentUser?.uid else {
+                print("No user is currently signed in")
+                return
+            }
+
+            let db = Firestore.firestore()
+            db.collection("users").document(userId).getDocument { [weak self] (document, error) in
+                if let error = error {
+                    print("Error fetching user data: \(error)")
+                    return
+                }
+
+                if let document = document, document.exists {
+                    let userData = document.data()
+                    print("userData", userData)
+                    let userName = userData?["fullName"] as? String ?? "No Name"
+                    let userEmail = userData?["email"] as? String ?? "No Email"
+                    
+                    DispatchQueue.main.async {
+                        let profileVC = ProfileViewController()
+                        profileVC.userName = userName
+                        profileVC.userEmail = userEmail
+                        profileVC.modalPresentationStyle = .fullScreen
+                        self?.present(profileVC, animated: true, completion: nil)
+                    }
+                } else {
+                    print("Document does not exist")
+                }
+            }
         }
     
     func presentImagePicker() {
