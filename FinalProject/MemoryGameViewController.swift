@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import FirebaseFirestore
+import FirebaseAuth
 
 class MemoryGameViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     var gameName: String?
@@ -118,16 +120,34 @@ class MemoryGameViewController: UIViewController, UICollectionViewDelegate, UICo
         super.viewDidAppear(animated)
         self.startGameTimer()
     }
-//    func startGameTimer() {
-//        self.gameTimer?.invalidate() // Invalidate any existing timer
-//        self.timerValue = 0 // Reset the timer value
-//        self.gameTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
-//            self?.timerValue += 1
-//            self?.timerLabel.text = "\(self?.timerValue ?? 0)"
-//            // You can also format this to display minutes and seconds if you prefer
-//        }
-//    }
-    
+
+    func fetchLevelTwo() {
+        let db = Firestore.firestore()
+        let levelsCollection = db.collection("levels")
+
+        // Assuming you know the ID of the specific document you want to fetch
+        let documentId = "specific_document_id"
+
+        levelsCollection.document(documentId).getDocument { (document, error) in
+            if let error = error {
+                // Handle any errors
+                print("Error fetching document: \(error)")
+            } else {
+                if let document = document, document.exists {
+                    // Document data may be nil if the document exists but has no data
+                    if let levelTwoValue = document.data()?["levelTwo"] as? Int {
+                        // Now you have the levelTwo value
+                        print("Level Two: \(levelTwoValue)")
+                    } else {
+                        print("Document does not contain levelTwo")
+                    }
+                } else {
+                    print("Document does not exist")
+                }
+            }
+        }
+    }
+
     func startGameTimer() {
         self.gameTimer?.invalidate() // Invalidate any existing timer
         self.timerValue = 0 // Reset the timer value
@@ -144,39 +164,148 @@ class MemoryGameViewController: UIViewController, UICollectionViewDelegate, UICo
 
     func stopGameTimer() {
         self.gameTimer?.invalidate()
-        // At this point, timerValue contains the total time taken
-        // You can store it or use it as needed
     }
 
+//    func checkForCompletion() {
+//        // Check if all tiles are matched
+//        if numberOfMatchesFound == randomNumbers.count / 2 {
+//            print("Game Completed")
+//            stopGameTimer() // Stop the timer
+//            let message = "Woohoo! You've completed the game in \(self.timerValue) seconds. Do you want to go to the next level?"
+//            let alert = UIAlertController(title: "Game Complete", message: message, preferredStyle: .alert)
+//
+//            // Add a "Yes" action
+//            alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { [weak self] _ in
+//                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//                if let nextLevelVC = storyboard.instantiateViewController(withIdentifier: "MemoryLevel2ViewController") as? MemoryLevel2ViewController {
+//                    self?.present(nextLevelVC, animated: true, completion: nil)
+//                }
+//            }))
+//
+//            // Add a "Maybe Later" action
+//            alert.addAction(UIAlertAction(title: "Maybe Later", style: .cancel, handler: { _ in
+//                // Handle the action for postponing to the next level
+//                self.dismiss(animated: true, completion: nil)
+//            }))
+//
+//            // Present the alert
+//            DispatchQueue.main.async {
+//                self.present(alert, animated: true, completion: nil)
+//            }
+//        }
+//    }
+//    func checkForCompletion() {
+//        // Check if all tiles are matched
+//        if numberOfMatchesFound == randomNumbers.count / 2 {
+//            print("Game Completed")
+//            stopGameTimer() // Stop the timer
+//            
+//            // Access Firestore
+//            let db = Firestore.firestore()
+//            let userId = Auth.auth().currentUser?.uid ?? ""
+//            
+//            // Assuming 'levels' collection contains a document per user
+//            db.collection("levels").document(userId).getDocument { [weak self] (document, error) in
+//                var message = "Woohoo! You've completed the game in \(self?.timerValue ?? 0) seconds."
+//                var shouldShowNextLevelOption = false
+//
+//                if let document = document, document.exists, let levelTwo = document.data()?["levelTwo"] as? Bool {
+//                    shouldShowNextLevelOption = levelTwo
+//                    message += shouldShowNextLevelOption ? " Do you want to go to the next level?" : ""
+//                } else {
+//                    // Handle error or document does not exist case
+//                    message += " Yay you've completed!"
+//                }
+//                
+//                // Now show the alert based on the shouldShowNextLevelOption flag
+//                DispatchQueue.main.async {
+//                    let alert = UIAlertController(title: "Game Complete", message: message, preferredStyle: .alert)
+//                    
+//                    if shouldShowNextLevelOption {
+//                        // Add a "Yes" action to move to the next level
+//                        alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in
+//                            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//                            if let nextLevelVC = storyboard.instantiateViewController(withIdentifier: "MemoryLevel2ViewController") as? MemoryLevel2ViewController {
+////                                let adminVC = AdminController()
+//                                nextLevelVC.modalPresentationStyle = .fullScreen
+//                                self?.present(nextLevelVC, animated: true, completion: nil)
+//                            }
+//                        }))
+//                    }
+//                    
+//                    // Add a "Maybe Later" action
+//                    alert.addAction(UIAlertAction(title: "Maybe Later", style: .cancel, handler: { _ in
+//                        self?.dismiss(animated: true, completion: nil)
+//                    }))
+//                    
+//                    // Present the alert
+//                    self?.present(alert, animated: true, completion: nil)
+//                }
+//            }
+//        }
+//    }
     func checkForCompletion() {
         // Check if all tiles are matched
         if numberOfMatchesFound == randomNumbers.count / 2 {
             print("Game Completed")
             stopGameTimer() // Stop the timer
-            let message = "Woohoo! You've completed the game in \(self.timerValue) seconds. Do you want to go to the next level?"
-            let alert = UIAlertController(title: "Game Complete", message: message, preferredStyle: .alert)
 
-            // Add a "Yes" action
-            alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { [weak self] _ in
-                let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                if let nextLevelVC = storyboard.instantiateViewController(withIdentifier: "MemoryLevel2ViewController") as? MemoryLevel2ViewController {
-                    self?.present(nextLevelVC, animated: true, completion: nil)
+            // Access Firestore
+            let db = Firestore.firestore()
+
+            // If 'levels' collection contains a global setting document, use a known document ID
+            let levelsDocumentId = "i742LLE6dwFsN1jmo6TX"  // Replace with your actual document ID
+            db.collection("levels").document(levelsDocumentId).getDocument { [weak self] (document, error) in
+                var message = "Woohoo! You've completed the game in \(self?.timerValue ?? 0) seconds."
+
+                if let error = error {
+                    // Handle any errors here
+                    print("Error fetching levels document: \(error)")
+                    message += " Yay you've completed!"
+                } else if let document = document, document.exists, let levelTwo = document.data()?["levelTwo"] as? Bool {
+                    // Check the value of levelTwo
+                    if levelTwo {
+                        // levelTwo is true, offer to go to the next level
+                        message += " Do you want to go to the next level?"
+                    } else {
+                        // levelTwo is false, just congratulate
+                        message += " Yay you've completed!"
+                    }
+                } else {
+                    print("Document does not exist or levelTwo field is not present")
+                    message += " Yay you've completed!"
                 }
-            }))
-
-            // Add a "Maybe Later" action
-            alert.addAction(UIAlertAction(title: "Maybe Later", style: .cancel, handler: { _ in
-                // Handle the action for postponing to the next level
-                self.dismiss(animated: true, completion: nil)
-            }))
-
-            // Present the alert
-            DispatchQueue.main.async {
-                self.present(alert, animated: true, completion: nil)
+                
+                // Now show the alert
+                DispatchQueue.main.async {
+                    let alert = UIAlertController(title: "Game Complete", message: message, preferredStyle: .alert)
+                    
+                    if let levelTwo = document?.data()?["levelTwo"] as? Bool, levelTwo {
+                        // Add a "Yes" action to move to the next level
+                        alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in
+                            // Go to the next level
+                            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                            if let nextLevelVC = storyboard.instantiateViewController(withIdentifier: "MemoryLevel2ViewController") as? MemoryLevel2ViewController {
+                                nextLevelVC.modalPresentationStyle = .fullScreen
+                                self?.present(nextLevelVC, animated: true, completion: nil)
+                            }
+                        }))
+                    }
+                    
+                    // Add a "Maybe Later" action
+                    alert.addAction(UIAlertAction(title: "Maybe Later", style: .cancel, handler: { _ in
+                        // Dismiss the current view controller
+                        self?.dismiss(animated: true, completion: nil)
+                    }))
+                    
+                    // Present the alert
+                    self?.present(alert, animated: true, completion: nil)
+                }
             }
         }
-
     }
+
+
     
     func generateRandomNumbers() {
         var random1: Int

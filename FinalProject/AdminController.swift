@@ -108,11 +108,25 @@ class AdminController: UIViewController {
         tableView.tableFooterView = footerView
     }
 
-
-
     @objc func addLevelButtonTapped() {
-        // Action to handle the Add Level button tap
+        let documentId = "i742LLE6dwFsN1jmo6TX"
+        let db = Firestore.firestore()
+
+        let levelDocumentRef = db.collection("levels").document(documentId)
+
+        levelDocumentRef.updateData([
+            "levelTwo": true
+        ]) { error in
+            if let error = error {
+                // Handle any errors here
+                print("Error updating document: \(error)")
+            } else {
+                // The field has been successfully updated
+                print("Level Two has been set to true globally")
+            }
+        }
     }
+
     
     func fetchUsers() {
         let db = Firestore.firestore()
