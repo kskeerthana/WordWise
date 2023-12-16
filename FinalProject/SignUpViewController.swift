@@ -136,9 +136,13 @@ class SignUpViewController: UIViewController {
                     adminVC.modalPresentationStyle = .fullScreen
                     self.present(adminVC, animated: true, completion: nil)
                 } else {
-                    let cameraVC = CameraViewController() // Replace with actual instantiation
-                    cameraVC.modalPresentationStyle = .fullScreen
-                    self.present(cameraVC, animated: true, completion: nil)
+                    let storyboard = UIStoryboard(name: "Main", bundle: nil)
+
+                    // Replace "Onboarding1ViewControllerID" with the storyboard ID you set for Onboarding1ViewController
+                    if let onboardVC = storyboard.instantiateViewController(withIdentifier: "OnboardingScreen") as? Onboarding1ViewController {
+                        onboardVC.modalPresentationStyle = .fullScreen
+                        self.present(onboardVC, animated: true, completion: nil)
+                    }
                 }
             }
     @IBAction func signUp2Tapped(_ sender: UIButton) {

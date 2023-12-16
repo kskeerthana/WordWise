@@ -120,6 +120,7 @@ class LoginViewController: UIViewController {
                 sceneDelegate.window?.makeKeyAndVisible()
             }
         }
+
     }
     
     @IBAction func signUpTapped(_ sender: UIButton) {
