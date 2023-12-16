@@ -120,11 +120,20 @@ class AdminController: UIViewController {
             if let error = error {
                 // Handle any errors here
                 print("Error updating document: \(error)")
+                self.presentAlert(title: "Error", message: "Error updating level: \(error.localizedDescription)")
             } else {
                 // The field has been successfully updated
                 print("Level Two has been set to true globally")
+                self.presentAlert(title: "Success", message: "Level added successfully")
             }
         }
+    }
+    
+    func presentAlert(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default)
+        alertController.addAction(okAction)
+        self.present(alertController, animated: true)
     }
 
     

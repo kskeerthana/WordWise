@@ -163,6 +163,10 @@ class MemoryLevel2ViewController: UIViewController, UICollectionViewDelegate, UI
         // Create the 2x3 matrix by repeating the numbers twice and then shuffling
         randomNumbers = [random1, random1, random2, random2, random3, random3, random4, random4].shuffled()
     }
+    
+    @IBAction func closeBtnTapped(_ sender: UIButton) {
+        self.dismiss(animated: true, completion: nil)
+    }
 }
 
 class PostCellLevelTwo: UICollectionViewCell {
