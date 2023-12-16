@@ -25,10 +25,12 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         { print("Fail to enable session") }
         
         // Configure the button
-        profileButton.setTitle("PP", for: .normal) // Set the text for the button
+        profileButton.setTitle("P", for: .normal) // Set the text for the button
         profileButton.titleLabel?.font = UIFont.systemFont(ofSize: 24) // Adjust the font size as needed
 
-        profileButton.backgroundColor = .lightGray // Or any color you prefer
+        profileButton.backgroundColor = .white // Or any color you prefer
+        profileButton.layer.borderColor = UIColor(hexString: "#7B81F7").cgColor
+        profileButton.layer.borderWidth = 3
         profileButton.setTitleColor(.black, for: .normal) // Set the text color
         profileButton.addTarget(self, action: #selector(profileButtonTapped), for: .touchUpInside)
 

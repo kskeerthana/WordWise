@@ -107,8 +107,10 @@ class LoginViewController: UIViewController {
     }
     
     func navigateToAdminPanel() {
-        let adminVC = AdminController() // Assuming AdminController is your admin panel view controller
-        self.present(adminVC, animated: true)
+        let adminVC = AdminController()
+        adminVC.modalPresentationStyle = .fullScreen
+        self.present(adminVC, animated: true, completion: nil)
+//        self.present(adminVC, animated: true)
     }
 
     func navigateToUserFlow() {

@@ -164,7 +164,6 @@ class MemoryGameViewController: UIViewController, UICollectionViewDelegate, UICo
                 }
             }))
 
-
             // Add a "Maybe Later" action
             alert.addAction(UIAlertAction(title: "Maybe Later", style: .cancel, handler: { _ in
                 // Handle the action for postponing to the next level
@@ -213,9 +212,6 @@ class PostCell: UICollectionViewCell {
             self.layer.borderWidth = 5.0
             self.layer.borderColor = UIColor(hexString: "#4F3CC9").cgColor //dark purple
             self.layer.backgroundColor = UIColor(hexString: "#C0BBDE").cgColor // light purple
-            
-
-
             // Shadow
             self.layer.shadowOpacity = 0.1
             self.layer.shadowRadius = 4
